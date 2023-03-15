@@ -1,5 +1,5 @@
 [package]
-name = "chiral-common-new"
+name = "chiral-common"
 version = "0.1.3"
 edition = "2021"
 authors = ["Qin Wan <rogerwq@gmail.com>"]
@@ -25,6 +25,6 @@ rand = "0.8"
 flate2 = "1.0"
 indicatif = "0.17"
 permutation = "0.4"
-chiral-derive-new = { path = "../../../chiral/crates/derive" } 
+chiral-derive = { path = "../../../chiral/crates/derive" } 
 
 [dev-dependencies]

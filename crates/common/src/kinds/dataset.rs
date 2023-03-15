@@ -1,7 +1,7 @@
 //! Dataset Kind
 
 use serde::{Serialize, Deserialize};
-use chiral_derive_new::Serialization;
+use chiral_derive::Serialization;
 use crate::traits::{Serialization, SerializedFormat};
 use strum_macros::{EnumString, Display};
 
@@ -22,7 +22,7 @@ impl Kind {
     pub fn size(&self) -> usize {
         match self {
             Kind::Empty => 0,
-            Kind::Dummy => 10,
+            Kind::Dummy => 4,
             Kind::TestChembl => 10000,
             Kind::Chembl30 => 2136187,
             Kind::PubChem => 160000000, // rough figure, PubChem does not have a version 

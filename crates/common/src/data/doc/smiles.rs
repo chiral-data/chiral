@@ -4,7 +4,7 @@
 
 use serde::{Serialize, Deserialize}; 
 use crate::traits::{Serialization, SerializedFormat};
-use chiral_derive_new::Serialization;
+use chiral_derive::Serialization;
 
 #[derive(Serialize, Deserialize, Serialization)]
 pub struct DocSMILES {
@@ -34,15 +34,19 @@ impl DocSMILES {
         }
     }
 
-    pub fn extract(&self, range: &std::ops::Range<usize>) -> Self {
-        let ids_ranged = self.get_ids().as_slice()[range.to_owned()].to_vec();
-        let smiles_ranged = self.get_smiles_vec().as_slice()[range.to_owned()].to_vec();
-        Self::new(ids_ranged, smiles_ranged)
-    }
+    pub fn extract_ids(&self, range: &std::ops::Range<usize>) -> Vec<crate::data::types::EntryID> { self.get_ids().as_slice()[range.to_owned()].to_vec() }
+    pub fn extract_smiles_vec(&self, range: &std::ops::Range<usize>) -> Vec<crate::app::chem::types::SMILES> { self.get_smiles_vec().as_slice()[range.to_owned()].to_vec() }
+    pub fn extract(&self, range: &std::ops::Range<usize>) -> Self { Self::new(self.extract_ids(range), self.extract_smiles_vec(range)) }
 
     pub fn get_smiles_vec(&self) -> &Vec<crate::app::chem::types::SMILES> { &self.smiles }
     pub fn get_ids(&self) -> &Vec<crate::data::types::EntryID> { &self.ids }
     pub fn len(&self) -> usize { self.ids.len() }
+}
+
+impl crate::data::Empty for DocSMILES {
+    fn empty() -> Self {
+        Self::new(vec![], vec![])
+    }
 }
 
 impl crate::data::Dummy for DocSMILES {
@@ -131,7 +135,7 @@ mod tests {
     #[test]
     fn test_permutation() {
         let dsk = crate::kinds::Dataset::TestChembl;
-        let filepath = std::path::PathBuf::from("../../../chiral-db-example-data/ChEMBL/chembl_30_chemreps_10k.txt");
+        let filepath = std::path::PathBuf::from("../../../chiral-db-example-data/ChEMBL");
         let doc = crate::data::load_from_path::<DocSMILES>(&dsk, &filepath);
         let id = "CHEMBL10030".to_string();
         assert_eq!(doc.get_smiles(&id).unwrap().to_string(), "O=C(c1ccc(OCCN2CCCC2)cc1)c1c(-c2ccc(O)cc2)sc2cc(O)ccc12".to_string());

@@ -1,8 +1,7 @@
 pub mod traits;
-pub mod types;
 pub mod logging;
 pub mod kinds;
-mod utils;
+pub mod utils;
 pub mod job;
 pub mod command;
 pub mod app;
@@ -11,7 +10,7 @@ pub mod data;
 #[cfg(test)]
 mod tests {
     use serde::{Serialize, Deserialize};
-    use chiral_derive_new::Serialization;
+    use chiral_derive::Serialization;
     use crate::traits::{Serialization, SerializedFormat};
 
     #[derive(Serialize, Deserialize, Serialization, PartialEq, Debug)]
