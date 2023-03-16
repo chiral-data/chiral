@@ -25,7 +25,7 @@ impl EntryChembl {
     }
 }
 
-type DataChembl = std::collections::HashMap<String, EntryChembl>;
+type DataChembl = std::collections::HashMap<ChemblID, EntryChembl>;
 
 pub struct SourceChembl {
     path: std::path::PathBuf,
