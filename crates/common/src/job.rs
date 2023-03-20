@@ -3,10 +3,12 @@
 
 use serde::{Serialize, Deserialize};
 use crate::traits::{Serialization, SerializedFormat};
-use chiral_derive_new::Serialization;
+use chiral_derive::Serialization;
 use chrono::serde::ts_milliseconds;
 
 pub type ID = String;
+pub type DividendSize = usize;
+pub type DividendIndex = (DividendSize, DividendSize);
 
 fn generate_id() -> ID {
     crate::utils::generate_id(32)
@@ -14,23 +16,24 @@ fn generate_id() -> ID {
 
 #[derive(Serialize, Deserialize, Serialization, Debug, Clone, PartialEq, Eq, Hash)]  
 pub struct Requirement {
-    ji: crate::types::ser::InputSer, 
+    ji: SerializedFormat, 
     opk: crate::kinds::Operator,
     dsk: crate::kinds::Dataset,
 }
 
 impl Requirement {
-    pub fn new(ji: crate::types::ser::InputSer, opk: crate::kinds::Operator, dsk: crate::kinds::Dataset) -> Self {
+    pub fn new(ji: SerializedFormat, opk: crate::kinds::Operator, dsk: crate::kinds::Dataset) -> Self {
         Self { ji, opk, dsk }
     }
 
-    pub fn get_ji(&self) -> &crate::types::ser::InputSer { &self.ji }
+    pub fn get_ji(&self) -> &SerializedFormat { &self.ji }
     pub fn get_opk(&self) -> &crate::kinds::Operator { &self.opk }
     pub fn get_dsk(&self) -> &crate::kinds::Dataset { &self.dsk }
     pub fn generate_cuk(&self) -> crate::kinds::ComputingUnit { crate::kinds::ComputingUnit::new(self.opk.to_owned(), self.dsk.to_owned()) }
 }
 
 impl std::default::Default for Requirement {
+    /// default job::Requirement: Substructure Matching on TestChembl
     fn default() -> Self {
         Self {
             ji: "c1cccc1N=O".to_string(),
@@ -67,6 +70,7 @@ pub struct Job {
     id: ID,
     req: Requirement,
     status: Status,
+    report_ready: bool, // report ready in local filesystem
     #[serde(with = "ts_milliseconds")]
     time_start: chrono::DateTime<chrono::Utc>,
     duration_prep: Option<std::time::Duration>, // time for data preparation
@@ -76,7 +80,7 @@ pub struct Job {
 impl Job {
     pub fn new(req: Requirement) -> Self {
         let id = generate_id();
-        Self { id, req, status: Status::Created, time_start: chrono::Utc::now(), duration_prep: None, duration: None }
+        Self { id, req, status: Status::Created, report_ready: false, time_start: chrono::Utc::now(), duration_prep: None, duration: None }
     }
 
     pub fn set_id(&mut self, id: ID) {
@@ -93,6 +97,10 @@ impl Job {
         self.duration = Some((chrono::Utc::now() - self.time_start).to_std().unwrap());
     }
 
+    pub fn report_done(&mut self) {
+        self.report_ready = true;
+    }
+
     pub fn cancel(&mut self) {
         self.status = Status::Cancelled;
     }
@@ -106,12 +114,16 @@ impl Job {
 
     pub fn get_id(&self) -> &ID { &self.id }
     pub fn get_req(&self) -> &Requirement { &self.req }
-    pub fn get_input(&self) -> &crate::types::ser::InputSer { self.req.get_ji() }
+    pub fn get_input(&self) -> &SerializedFormat { self.req.get_ji() }
     pub fn get_opk(&self) -> &crate::kinds::Operator { self.req.get_opk() }
     pub fn get_dsk(&self) -> &crate::kinds::Dataset { self.req.get_dsk() }
 
     pub fn is_status(&self, comp_status: Status) -> bool {
         self.status == comp_status
+    }
+
+    pub fn is_report_ready(&self) -> bool { 
+        self.report_ready
     }
 
     pub fn set_status(&mut self, new_status: Status) {
@@ -125,7 +137,7 @@ impl Job {
 
 impl std::fmt::Display for Job {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        format!("{} {}\t\t{}\t{}\t{}", self.id, self.status, self.req.get_opk().to_string(), self.req.get_dsk().to_string(), self.print_time_properties()).fmt(f)
+        format!("{} {}\t\t{:20}\t{:15}\t{}", self.id, self.status, self.req.get_opk().to_string(), self.req.get_dsk().to_string(), self.print_time_properties()).fmt(f)
     }
 }
 

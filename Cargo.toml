@@ -1,7 +1,7 @@
 [workspace]
 
 members = [
-    "crates/application",
-    "crates/common",
     "crates/derive",
+    "crates/apps",
+    "crates/common",
 ]

@@ -1,4 +1,4 @@
-//! Commands for using OpenBabel in CLI
+//! Commands for using OpenBabel in Chiral SaaS 
 //! 
 
 use anyhow::{Result, Context};

@@ -25,7 +25,7 @@ impl EntryChembl {
     }
 }
 
-type DataChembl = std::collections::HashMap<String, EntryChembl>;
+type DataChembl = std::collections::HashMap<ChemblID, EntryChembl>;
 
 pub struct SourceChembl {
     path: std::path::PathBuf,
@@ -77,9 +77,13 @@ impl SourceChembl {
     }
 
     pub fn load_all(&mut self) {
-        let file = std::fs::File::open(&self.path).unwrap();
-        let lines = std::io::BufReader::new(file).lines();
-        self.convert_lines(lines);
+        match std::fs::File::open(&self.path) {
+            Ok(file) => {
+                let lines = std::io::BufReader::new(file).lines();
+                self.convert_lines(lines);
+            },
+            Err(e) => crate::logging::error(format!("Error {} on file path: {:?}", e, self.path).as_str())
+        }
     }
 
     pub fn load_partial(&mut self, range: &std::ops::Range<usize>) {

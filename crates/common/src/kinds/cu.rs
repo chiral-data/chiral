@@ -3,7 +3,7 @@
 
 use serde::{Serialize, Deserialize};
 use crate::traits::{Serialization, SerializedFormat};
-use chiral_derive_new::Serialization;
+use chiral_derive::Serialization;
 
 #[derive(Serialize, Deserialize, Serialization, Debug, Clone, PartialEq, Eq, Hash)]  
 pub struct Kind {
