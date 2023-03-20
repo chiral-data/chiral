@@ -13,6 +13,8 @@ pub struct Input {
 
 impl TraitInput for Input {
     fn default() -> Self {
+        // todo
+        // the requirement of input directory could has to be removed
         let input_dir_o = std::env::var_os("RECGEN_INPUT");
         if input_dir_o.is_none() {
             panic!("Set environment variable RECGEN_INPUT for example input directory");
