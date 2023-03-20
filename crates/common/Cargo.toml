@@ -25,7 +25,6 @@ rand = "0.8"
 flate2 = "1.0"
 indicatif = "0.17"
 permutation = "0.4"
-# chiral-derive = { path = "../derive" } 
-chiral-derive = "0.1.3" 
+chiral-derive = "0.1.3"
 
 [dev-dependencies]

@@ -57,6 +57,13 @@ impl crate::traits::TraitReport for Report {
             println!("\t {id}\t {matches:?}");
         }
         println!("\t Count: {}", self.output.results.len());
+        // let mut ids: Vec<crate::data::types::EntryID> = vec![];
+        // for r in self.output.results.iter() {
+        //     if !ids.contains(&r.1) {
+        //         ids.push(r.1.to_owned());
+        //     }
+        // }
+        // println!("\t Count: {} after duplication", ids.len()); 
     }
 }
 

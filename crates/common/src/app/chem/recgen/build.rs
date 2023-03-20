@@ -15,7 +15,7 @@ impl TraitInput for Input {
     fn default() -> Self {
         let input_dir_o = std::env::var_os("RECGEN_INPUT");
         if input_dir_o.is_none() {
-            panic!("Set environment variable RECGEN_INPUT for example input directorydri");
+            panic!("Set environment variable RECGEN_INPUT for example input directory");
         }
         
         let input_dir =  std::path::PathBuf::from(input_dir_o.unwrap().into_string().unwrap());
