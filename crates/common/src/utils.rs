@@ -9,3 +9,7 @@ const ALPHABET: [char; 36] = [
 pub fn generate_id(length: usize) -> String {
     nanoid::nanoid!(length, &ALPHABET)
 }
+
+pub fn get_env_var(env_var_name: &str) -> String {
+    std::env::var_os(env_var_name).unwrap().to_string_lossy().to_string()
+}

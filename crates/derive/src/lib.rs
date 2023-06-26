@@ -58,4 +58,13 @@ pub fn derive_report_generator(input: proc_macro::TokenStream) -> proc_macro::To
     output.into()
 }
 
+#[proc_macro_derive(InputFileRequirements)]
+pub fn derive_input_file_requirements(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let syn::DeriveInput { ident, .. } = syn::parse_macro_input!(input);
+    let output = quote::quote! {
+        impl crate::traits::TraitFileRequirements for #ident {}
+    };
+    output.into()
+}
+
 

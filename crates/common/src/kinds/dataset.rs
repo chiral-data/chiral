@@ -8,10 +8,15 @@ use strum_macros::{EnumString, Display};
 #[derive(Serialize, Deserialize, Serialization, Debug, Clone, Copy, PartialEq, Eq, Hash, EnumString, Display)]  
 #[strum(serialize_all = "snake_case")]
 pub enum Kind {
+    #[strum(serialize = "empty")]
     Empty,
+    #[strum(serialize = "dummy")]
     Dummy,
+    #[strum(serialize = "test_chembl")]
     TestChembl,
+    #[strum(serialize = "chembl30")]
     Chembl30,
+    #[strum(serialize = "pub_chem")]
     PubChem
 }
 

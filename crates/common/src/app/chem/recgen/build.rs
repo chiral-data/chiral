@@ -6,7 +6,7 @@ use chiral_derive::*;
 use crate::traits::*;
 
 /// Input
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Serialization)] 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Serialization, InputFileRequirements)] 
 pub struct Input {
     pub mol: String, // moleclue in mol format
 }

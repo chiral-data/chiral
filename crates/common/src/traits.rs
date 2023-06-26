@@ -8,6 +8,13 @@ pub trait Serialization {
     fn ser_from(content: &SerializedFormat) -> Self; 
 }
 
+pub trait TraitFileRequirements {
+    fn dir(&self) -> String { ".".to_string() }
+    fn dir_full(&self) -> String { ".".to_string() }
+    fn files_in(&self) -> Vec<String> { vec![] }
+    fn files_out(&self) -> Vec<String> { vec![] }
+}
+
 pub trait TraitData {
     fn blank() -> Self;
     fn len(&self) -> usize;
@@ -15,6 +22,13 @@ pub trait TraitData {
 
 pub trait TraitDataStore {
     fn get_id_smiles_pairs(&self, dsk: &crate::kinds::Dataset, div_index: &crate::job::DividendIndex) -> Option<crate::app::chem::types::IdSmilesPairs>;
+}
+
+pub trait TraitFileClient : std::marker::Sync + std::marker::Send {
+    fn download_files(&self, _local_dir: &str, _remote_dir: &str, _files: &Vec<String>) -> anyhow::Result<()> { Ok(()) }
+    fn upload_files(&self, _local_dir: &str, _remote_dir: &str, _files: &Vec<String>) -> anyhow::Result<()> { Ok(()) }
+    fn remove_local_files(&self, _local_dir: &str, _files: &Vec<String>) -> anyhow::Result<()> { Ok(()) }
+    fn remove_local_dir(&self, _local_dir: &str) -> anyhow::Result<()> { Ok(()) }
 }
 
 pub trait TraitOperator {

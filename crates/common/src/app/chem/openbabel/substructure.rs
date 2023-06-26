@@ -6,7 +6,7 @@ use crate::traits::*;
 use chiral_derive::*;
 
 /// Input
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Serialization)] 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Serialization, InputFileRequirements)] 
 pub struct  Input {
     pub smarts: crate::app::chem::types::SMARTS
 }

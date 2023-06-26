@@ -9,7 +9,9 @@ pub enum Kind {
     #[strum(serialize = "ob_ss")]
     OpenBabelSSMatching,
     #[strum(serialize = "recgen_build")]
-    ReCGenBuild
+    ReCGenBuild,
+    #[strum(serialize = "gromacs_run_gmx_command")]
+    GromacsRunGMXCommand
 }
 
 impl Kind {
@@ -23,14 +25,14 @@ impl Kind {
             Self::OpenBabelSSMatching | Self::OpenBabelSimilaritySearching(_) => true, 
             _ => false
         }
-
     }
 
     pub fn report_print(&self, content: &crate::traits::SerializedFormat) {
         match self {
             crate::kinds::Operator::OpenBabelSimilaritySearching(_) => super::chem::openbabel::similarity::Report::ser_from(content).print(),
             crate::kinds::Operator::OpenBabelSSMatching => super::chem::openbabel::substructure::Report::ser_from(content).print(),
-            crate::kinds::Operator::ReCGenBuild => super::chem::recgen::build::Report::ser_from(content).print()
+            crate::kinds::Operator::ReCGenBuild => super::chem::recgen::build::Report::ser_from(content).print(),
+            _ => unimplemented!("not implemented") 
         }
     }
 
@@ -39,7 +41,16 @@ impl Kind {
         match self {
             Kind::OpenBabelSimilaritySearching(_) => super::chem::openbabel::similarity::Report::new((job_id, cuk, input_ser, output_sers)).save(filepath),
             Kind::OpenBabelSSMatching => super::chem::openbabel::substructure::Report::new((job_id, cuk, input_ser, output_sers)).save(filepath),
-            Kind::ReCGenBuild => super::chem::recgen::build::Report::new((job_id, cuk, input_ser, output_sers)).save(filepath)
+            Kind::ReCGenBuild => super::chem::recgen::build::Report::new((job_id, cuk, input_ser, output_sers)).save(filepath),
+            _ => unimplemented!("not implemented") 
+        }
+    }
+
+    pub fn app_name(&self) -> &str {
+        match self {
+            Self::OpenBabelSSMatching | Self::OpenBabelSimilaritySearching(_) => "openbabel",
+            Self::ReCGenBuild => "my_presto",
+            Self::GromacsRunGMXCommand => "gromacs"
         }
     }
 }

@@ -1,11 +1,9 @@
-//! Commands for using OpenBabel in Chiral SaaS 
+//! Commands for using OpenBabel in Chiral Cli 
 //! 
 
 use anyhow::{Result, Context};
 use std::str::FromStr;
 use crate::traits::Serialization;
-
-use crate::command::HELP_TEMPLATE;
 
 const EXAMPLES: &str = "\
 \nRun OpenBabel substructure matching with input molecule 'c1cccc1N=O' on dataset 'test_chembl'
@@ -59,7 +57,7 @@ pub fn set() -> clap::Command {
                         .required(true),
                 )
         )
-        .help_template(HELP_TEMPLATE)
+        .help_template(crate::command::HELP_TEMPLATE)
 }
 
 fn dataset(matches: &clap::ArgMatches) -> Result<crate::kinds::Dataset> {

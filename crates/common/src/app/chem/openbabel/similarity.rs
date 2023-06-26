@@ -5,10 +5,10 @@ use crate::traits::*;
 use chiral_derive::*;
 
 /// Input
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Serialization)] 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Serialization, InputFileRequirements)] 
 pub struct Input {
     pub smiles: crate::app::chem::types::SMILES,
-    pub threshold: f32
+    pub threshold: f32,
 }
 
 impl TraitInput for Input {
@@ -19,7 +19,6 @@ impl TraitInput for Input {
         }
     }
 }
-
 
 /// Output
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Serialization)]
