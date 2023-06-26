@@ -3,6 +3,5 @@
 members = [
     "crates/derive",
     "crates/common",
-    "crates/apps-common",
     # "crates/apps",
 ]

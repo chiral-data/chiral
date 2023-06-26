@@ -3,8 +3,7 @@ pub mod logging;
 pub mod kinds;
 pub mod utils;
 pub mod job;
-pub mod command;
-pub mod app;
+pub mod apps;
 pub mod data;
 
 #[cfg(test)]

@@ -1,7 +1,7 @@
 //! Run Gromacs gxm commands
 //! 
 
-use chiral_common::app::chem::gromacs::gmx_command::*;
+use chiral_common::apps::chem::gromacs::gmx_command::*;
 use chiral_common::traits::*;
 
 /// Data
@@ -26,7 +26,7 @@ impl chiral_common::traits::TraitOperator for Operator {
     fn new(opk: &chiral_common::kinds::Operator) -> Self {
         match opk {
             chiral_common::kinds::Operator::GromacsRunGMXCommand => {
-                let dir_str = chiral_common::app::env_var::Variable::GromacsWorkDir.get();
+                let dir_str = chiral_common::apps::env_var::Variable::GromacsWorkDir.get();
                 let home_dir = std::path::PathBuf::from(dir_str);
                 Self { home_dir }
             },

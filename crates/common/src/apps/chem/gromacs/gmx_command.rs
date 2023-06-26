@@ -85,7 +85,7 @@ impl TraitOutput for Output {
 
 /// Report
 #[add_report_fields]
-#[derive(Debug, PartialEq, Serialize, Deserialize, Serialization, ImplReport)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Serialization, ReportRequirements)]
 pub struct Report {}
 
 impl crate::traits::TraitReport for Report {

@@ -29,7 +29,7 @@ impl TraitInput for Input {
 /// Output
 #[derive(Debug, PartialEq, Serialize, Deserialize, Serialization, Clone)]
 pub struct Output {
-    pub results: Vec<crate::app::chem::types::SMILES>
+    pub results: Vec<crate::apps::types::SMILES>
 }
 
 impl TraitOutput for Output {
@@ -53,7 +53,7 @@ impl TraitOutput for Output {
 
 /// Report
 #[add_report_fields]
-#[derive(Debug, PartialEq, Serialize, Deserialize, Serialization, ImplReport)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Serialization, ReportRequirements)]
 pub struct Report {}
 
 impl TraitReport for Report {

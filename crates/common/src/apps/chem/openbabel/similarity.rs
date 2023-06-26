@@ -7,14 +7,14 @@ use chiral_derive::*;
 /// Input
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Serialization, InputFileRequirements)] 
 pub struct Input {
-    pub smiles: crate::app::chem::types::SMILES,
+    pub smiles: crate::apps::types::SMILES,
     pub threshold: f32,
 }
 
 impl TraitInput for Input {
     fn default() -> Self {
         Self { 
-            smiles: crate::app::chem::types::SMILES::from("c1ccccc1N=O"),
+            smiles: crate::apps::types::SMILES::from("c1ccccc1N=O"),
             threshold: 0.1
         }
     }
@@ -23,7 +23,7 @@ impl TraitInput for Input {
 /// Output
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Serialization)]
 pub struct Output {
-    pub results: Vec<(f32, crate::data::types::EntryID)>
+    pub results: Vec<(f32, crate::apps::types::EntryID)>
 }
 
 impl TraitOutput for Output {
@@ -42,7 +42,7 @@ impl TraitOutput for Output {
 
 /// Report
 #[add_report_fields]
-#[derive(Debug, PartialEq, Serialize, Deserialize, Serialization, ImplReport)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Serialization, ReportRequirements)]
 pub struct Report {}
 
 impl crate::traits::TraitReport for Report {

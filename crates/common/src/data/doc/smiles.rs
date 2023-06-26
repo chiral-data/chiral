@@ -8,8 +8,8 @@ use chiral_derive::Serialization;
 
 #[derive(Serialize, Deserialize, Serialization)]
 pub struct DocSMILES {
-    ids: Vec<crate::data::types::EntryID>,
-    smiles: Vec<crate::app::chem::types::SMILES>,
+    ids: Vec<crate::apps::types::EntryID>,
+    smiles: Vec<crate::apps::types::SMILES>,
 }
 
 impl DocSMILES {
@@ -17,7 +17,7 @@ impl DocSMILES {
         Self { ids: vec![], smiles: vec![] }
     }
 
-    pub fn new(ids_in: Vec<crate::data::types::EntryID>, smiles_in: Vec<crate::app::chem::types::SMILES>) -> Self {
+    pub fn new(ids_in: Vec<crate::apps::types::EntryID>, smiles_in: Vec<crate::apps::types::SMILES>) -> Self {
         let mut perm = permutation::sort(&ids_in);
         let mut ids = ids_in;
         perm.apply_slice_in_place(&mut ids);
@@ -27,19 +27,19 @@ impl DocSMILES {
         Self { ids, smiles }
     }
 
-    pub fn get_smiles(&self, id: &crate::data::types::EntryID) -> Option<&crate::app::chem::types::SMILES> {
+    pub fn get_smiles(&self, id: &crate::apps::types::EntryID) -> Option<&crate::apps::types::SMILES> {
         match self.ids.binary_search(id) {
             Ok(index) => self.smiles.get(index),
             Err(_) => None
         }
     }
 
-    pub fn extract_ids(&self, range: &std::ops::Range<usize>) -> Vec<crate::data::types::EntryID> { self.get_ids().as_slice()[range.to_owned()].to_vec() }
-    pub fn extract_smiles_vec(&self, range: &std::ops::Range<usize>) -> Vec<crate::app::chem::types::SMILES> { self.get_smiles_vec().as_slice()[range.to_owned()].to_vec() }
+    pub fn extract_ids(&self, range: &std::ops::Range<usize>) -> Vec<crate::apps::types::EntryID> { self.get_ids().as_slice()[range.to_owned()].to_vec() }
+    pub fn extract_smiles_vec(&self, range: &std::ops::Range<usize>) -> Vec<crate::apps::types::SMILES> { self.get_smiles_vec().as_slice()[range.to_owned()].to_vec() }
     pub fn extract(&self, range: &std::ops::Range<usize>) -> Self { Self::new(self.extract_ids(range), self.extract_smiles_vec(range)) }
 
-    pub fn get_smiles_vec(&self) -> &Vec<crate::app::chem::types::SMILES> { &self.smiles }
-    pub fn get_ids(&self) -> &Vec<crate::data::types::EntryID> { &self.ids }
+    pub fn get_smiles_vec(&self) -> &Vec<crate::apps::types::SMILES> { &self.smiles }
+    pub fn get_ids(&self) -> &Vec<crate::apps::types::EntryID> { &self.ids }
     pub fn len(&self) -> usize { self.ids.len() }
 }
 

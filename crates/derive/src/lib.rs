@@ -39,7 +39,7 @@ pub fn add_report_fields(_args: proc_macro::TokenStream, input: proc_macro::Toke
     }
 }
 
-#[proc_macro_derive(ImplReport)]
+#[proc_macro_derive(ReportRequirements)]
 pub fn derive_report_generator(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let syn::DeriveInput { ident, .. } = syn::parse_macro_input!(input);
     let output = quote::quote! {
@@ -62,7 +62,7 @@ pub fn derive_report_generator(input: proc_macro::TokenStream) -> proc_macro::To
 pub fn derive_input_file_requirements(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let syn::DeriveInput { ident, .. } = syn::parse_macro_input!(input);
     let output = quote::quote! {
-        impl crate::traits::TraitFileRequirements for #ident {}
+        impl TraitFileRequirements for #ident {}
     };
     output.into()
 }

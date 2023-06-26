@@ -6,7 +6,6 @@ pub use doc::smiles::DocStoreSMILES;
 pub use source::chembl::SourceChembl;
 
 pub mod types {
-    pub type EntryID = String;
 }
 
 pub trait Empty {

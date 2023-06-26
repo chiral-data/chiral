@@ -31,25 +31,25 @@ impl std::fmt::Display for ParseStringError {
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]  
 pub enum Kind {
-    OpenBabel { kind: crate::app::chem::openbabel::kinds::Fingerprint }
+    OpenBabel { kind: crate::apps::chem::openbabel::kinds::Fingerprint }
 }
 
 impl std::default::Default for Kind {
     fn default() -> Self {
-        Self::OpenBabel { kind: crate::app::chem::openbabel::kinds::Fingerprint::default() }
+        Self::OpenBabel { kind: crate::apps::chem::openbabel::kinds::Fingerprint::default() }
     }
 }
 
 impl Kind {
-    pub fn kind_openbabel_fp2(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::app::chem::openbabel::kinds::Fingerprint::FP2 { nbits } } }
-    pub fn kind_openbabel_fp3(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::app::chem::openbabel::kinds::Fingerprint::FP3 { nbits } } }
-    pub fn kind_openbabel_fp4(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::app::chem::openbabel::kinds::Fingerprint::FP4 { nbits } } }
-    pub fn kind_openbabel_ecfp0(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::app::chem::openbabel::kinds::Fingerprint::ECFP0 { nbits } } }
-    pub fn kind_openbabel_ecfp2(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::app::chem::openbabel::kinds::Fingerprint::ECFP2 { nbits } } }
-    pub fn kind_openbabel_ecfp4(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::app::chem::openbabel::kinds::Fingerprint::ECFP4 { nbits } } }
-    pub fn kind_openbabel_ecfp6(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::app::chem::openbabel::kinds::Fingerprint::ECFP6 { nbits } } }
-    pub fn kind_openbabel_ecfp8(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::app::chem::openbabel::kinds::Fingerprint::ECFP8 { nbits } } }
-    pub fn kind_openbabel_ecfp10(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::app::chem::openbabel::kinds::Fingerprint::ECFP10 { nbits } } }
+    pub fn kind_openbabel_fp2(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::apps::chem::openbabel::kinds::Fingerprint::FP2 { nbits } } }
+    pub fn kind_openbabel_fp3(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::apps::chem::openbabel::kinds::Fingerprint::FP3 { nbits } } }
+    pub fn kind_openbabel_fp4(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::apps::chem::openbabel::kinds::Fingerprint::FP4 { nbits } } }
+    pub fn kind_openbabel_ecfp0(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::apps::chem::openbabel::kinds::Fingerprint::ECFP0 { nbits } } }
+    pub fn kind_openbabel_ecfp2(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::apps::chem::openbabel::kinds::Fingerprint::ECFP2 { nbits } } }
+    pub fn kind_openbabel_ecfp4(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::apps::chem::openbabel::kinds::Fingerprint::ECFP4 { nbits } } }
+    pub fn kind_openbabel_ecfp6(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::apps::chem::openbabel::kinds::Fingerprint::ECFP6 { nbits } } }
+    pub fn kind_openbabel_ecfp8(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::apps::chem::openbabel::kinds::Fingerprint::ECFP8 { nbits } } }
+    pub fn kind_openbabel_ecfp10(nbits: u32) -> Kind { Kind::OpenBabel { kind: crate::apps::chem::openbabel::kinds::Fingerprint::ECFP10 { nbits } } }
 
     pub fn new(pkg_str: &str, fp_str: &str, nbits: u32) -> Result<Self, ParseStringError> {
         match (pkg_str, fp_str) {
@@ -84,15 +84,15 @@ impl std::string::ToString for Kind {
         match self {
             Self::OpenBabel { kind } => {
                 match kind {
-                    crate::app::chem::openbabel::kinds::Fingerprint::FP2 { nbits } => format!("ob_fp2_{}", nbits),
-                    crate::app::chem::openbabel::kinds::Fingerprint::FP3 { nbits } => format!("ob_fp3_{}", nbits),
-                    crate::app::chem::openbabel::kinds::Fingerprint::FP4 { nbits } => format!("ob_fp4_{}", nbits),
-                    crate::app::chem::openbabel::kinds::Fingerprint::ECFP0 { nbits } => format!("ob_ecfp0_{}", nbits),
-                    crate::app::chem::openbabel::kinds::Fingerprint::ECFP2 { nbits } => format!("ob_ecfp2_{}", nbits),
-                    crate::app::chem::openbabel::kinds::Fingerprint::ECFP4 { nbits } => format!("ob_ecfp4_{}", nbits),
-                    crate::app::chem::openbabel::kinds::Fingerprint::ECFP6 { nbits } => format!("ob_ecfp6_{}", nbits),
-                    crate::app::chem::openbabel::kinds::Fingerprint::ECFP8 { nbits } => format!("ob_ecfp8_{}", nbits),
-                    crate::app::chem::openbabel::kinds::Fingerprint::ECFP10 { nbits } => format!("ob_ecfp10_{}", nbits),
+                    crate::apps::chem::openbabel::kinds::Fingerprint::FP2 { nbits } => format!("ob_fp2_{}", nbits),
+                    crate::apps::chem::openbabel::kinds::Fingerprint::FP3 { nbits } => format!("ob_fp3_{}", nbits),
+                    crate::apps::chem::openbabel::kinds::Fingerprint::FP4 { nbits } => format!("ob_fp4_{}", nbits),
+                    crate::apps::chem::openbabel::kinds::Fingerprint::ECFP0 { nbits } => format!("ob_ecfp0_{}", nbits),
+                    crate::apps::chem::openbabel::kinds::Fingerprint::ECFP2 { nbits } => format!("ob_ecfp2_{}", nbits),
+                    crate::apps::chem::openbabel::kinds::Fingerprint::ECFP4 { nbits } => format!("ob_ecfp4_{}", nbits),
+                    crate::apps::chem::openbabel::kinds::Fingerprint::ECFP6 { nbits } => format!("ob_ecfp6_{}", nbits),
+                    crate::apps::chem::openbabel::kinds::Fingerprint::ECFP8 { nbits } => format!("ob_ecfp8_{}", nbits),
+                    crate::apps::chem::openbabel::kinds::Fingerprint::ECFP10 { nbits } => format!("ob_ecfp10_{}", nbits),
                 }
             }
         }

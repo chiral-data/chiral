@@ -8,12 +8,12 @@ use chiral_derive::*;
 /// Input
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Serialization, InputFileRequirements)] 
 pub struct  Input {
-    pub smarts: crate::app::chem::types::SMARTS
+    pub smarts: crate::apps::types::SMARTS
 }
 
 impl TraitInput for Input {
     fn default() -> Self {
-        Self { smarts: crate::app::chem::types::SMILES::from("c1ccccc1N=O") }
+        Self { smarts: crate::apps::types::SMILES::from("c1ccccc1N=O") }
     }
 }
 
@@ -22,7 +22,7 @@ pub type MatchResult = Vec<Vec<i32>>;
 
 #[derive(PartialEq, Debug, Serialize, Deserialize, Serialization, Clone)]
 pub struct Output {
-    pub results: Vec<(MatchResult, crate::data::types::EntryID)>
+    pub results: Vec<(MatchResult, crate::apps::types::EntryID)>
 }
 
 impl crate::traits::TraitOutput for Output {
@@ -41,7 +41,7 @@ impl crate::traits::TraitOutput for Output {
 
 /// Report
 #[add_report_fields]
-#[derive(Debug, PartialEq, Serialize, Deserialize, Serialization, ImplReport)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Serialization, ReportRequirements)]
 pub struct Report {}
 
 impl crate::traits::TraitReport for Report {

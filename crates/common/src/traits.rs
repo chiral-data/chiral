@@ -21,7 +21,7 @@ pub trait TraitData {
 }
 
 pub trait TraitDataStore {
-    fn get_id_smiles_pairs(&self, dsk: &crate::kinds::Dataset, div_index: &crate::job::DividendIndex) -> Option<crate::app::chem::types::IdSmilesPairs>;
+    fn get_id_smiles_pairs(&self, dsk: &crate::kinds::Dataset, div_index: &crate::job::DividendIndex) -> Option<crate::apps::types::IdSmilesPairs>;
 }
 
 pub trait TraitFileClient : std::marker::Sync + std::marker::Send {
@@ -29,6 +29,17 @@ pub trait TraitFileClient : std::marker::Sync + std::marker::Send {
     fn upload_files(&self, _local_dir: &str, _remote_dir: &str, _files: &Vec<String>) -> anyhow::Result<()> { Ok(()) }
     fn remove_local_files(&self, _local_dir: &str, _files: &Vec<String>) -> anyhow::Result<()> { Ok(()) }
     fn remove_local_dir(&self, _local_dir: &str) -> anyhow::Result<()> { Ok(()) }
+}
+
+pub trait TraitInput: Serialization {
+    fn default() -> Self;
+}
+
+pub trait TraitOutput: Serialization {
+    fn blank() -> Self;
+    fn clear(&mut self);
+    fn append(&mut self, other: &mut Self);
+    fn len(&self) -> usize;
 }
 
 pub trait TraitOperator {
@@ -42,17 +53,6 @@ pub trait TraitOperator {
     fn prepare_data(&self, dsk: &crate::kinds::Dataset, div_index: &crate::job::DividendIndex, ds: std::sync::Arc<std::sync::Mutex<dyn TraitDataStore>>) -> Option<Self::DataType>;
     fn compute(&self, input: &Self::InputType, data: &Self::DataType, div_index: &crate::job::DividendIndex) -> Self::OutputType;
     fn report(&self, job_id: crate::job::ID, input: Self::InputType, data: &Self::DataType, output: Self::OutputType) -> Self::ReportType;
-}
-
-pub trait TraitInput: Serialization {
-    fn default() -> Self;
-}
-
-pub trait TraitOutput: Serialization {
-    fn blank() -> Self;
-    fn clear(&mut self);
-    fn append(&mut self, other: &mut Self);
-    fn len(&self) -> usize;
 }
 
 pub trait TraitReport: Serialization {
