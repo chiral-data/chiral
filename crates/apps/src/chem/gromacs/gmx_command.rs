@@ -67,7 +67,7 @@ impl chiral_common::traits::TraitOperator for Operator {
         }
     }
 
-    fn report(&self, job_id: chiral_common::job::ID, input: Self::InputType, _data: &Self::DataType, output: Self::OutputType) -> Self::ReportType {
+    fn report(&self, job_id: chiral_common::types::JobID, input: Self::InputType, _data: &Self::DataType, output: Self::OutputType) -> Self::ReportType {
         Report {
             job_id,
             cuk: chiral_common::kinds::ComputingUnit::new(self.get_kind(), chiral_common::kinds::Dataset::Empty),

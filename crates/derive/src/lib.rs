@@ -21,7 +21,7 @@ pub fn add_report_fields(_args: proc_macro::TokenStream, input: proc_macro::Toke
         syn::Data::Struct(ref mut struct_data) => {           
             match &mut struct_data.fields {
                 syn::Fields::Named(fields) => {
-                    fields.named.push(syn::Field::parse_named.parse2(quote::quote! { pub job_id: crate::job::ID}).unwrap());
+                    fields.named.push(syn::Field::parse_named.parse2(quote::quote! { pub job_id: crate::types::JobID}).unwrap());
                     fields.named.push(syn::Field::parse_named.parse2(quote::quote! { pub cuk: crate::kinds::ComputingUnit }).unwrap());
                     fields.named.push(syn::Field::parse_named.parse2(quote::quote! { pub input: Input }).unwrap());
                     fields.named.push(syn::Field::parse_named.parse2(quote::quote! { pub output: Output }).unwrap());
@@ -44,7 +44,7 @@ pub fn derive_report_generator(input: proc_macro::TokenStream) -> proc_macro::To
     let syn::DeriveInput { ident, .. } = syn::parse_macro_input!(input);
     let output = quote::quote! {
         impl #ident {
-            pub fn new(t: (crate::job::ID, crate::kinds::ComputingUnit, &SerializedFormat, &Vec<SerializedFormat>)) -> Self {
+            pub fn new(t: (crate::types::JobID, crate::kinds::ComputingUnit, &SerializedFormat, &Vec<SerializedFormat>)) -> Self {
                 let (job_id, cuk, input_ser, output_sers) = t;
                 let input = Input::ser_from(input_ser);
                 let mut output = Output::blank();

@@ -52,7 +52,7 @@ pub trait TraitOperator {
     fn get_kind(&self) -> crate::kinds::Operator;
     fn prepare_data(&self, dsk: &crate::kinds::Dataset, div_index: &crate::job::DividendIndex, ds: std::sync::Arc<std::sync::Mutex<dyn TraitDataStore>>) -> Option<Self::DataType>;
     fn compute(&self, input: &Self::InputType, data: &Self::DataType, div_index: &crate::job::DividendIndex) -> Self::OutputType;
-    fn report(&self, job_id: crate::job::ID, input: Self::InputType, data: &Self::DataType, output: Self::OutputType) -> Self::ReportType;
+    fn report(&self, job_id: crate::types::JobID, input: Self::InputType, data: &Self::DataType, output: Self::OutputType) -> Self::ReportType;
 }
 
 pub trait TraitReport: Serialization {

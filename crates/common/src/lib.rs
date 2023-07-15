@@ -1,3 +1,4 @@
+pub mod types;
 pub mod traits;
 pub mod logging;
 pub mod kinds;

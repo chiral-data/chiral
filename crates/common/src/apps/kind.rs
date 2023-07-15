@@ -36,7 +36,7 @@ impl Kind {
         }
     }
 
-    pub fn report_save(&self, job_id: crate::job::ID, dsk: crate::kinds::Dataset, input_ser: &crate::traits::SerializedFormat, output_sers: &Vec<crate::traits::SerializedFormat>, filepath: &std::path::PathBuf) -> std::io::Result<u64> {
+    pub fn report_save(&self, job_id: crate::types::JobID, dsk: crate::kinds::Dataset, input_ser: &crate::traits::SerializedFormat, output_sers: &Vec<crate::traits::SerializedFormat>, filepath: &std::path::PathBuf) -> std::io::Result<u64> {
         let cuk = crate::kinds::ComputingUnit::new(self.to_owned(), dsk); 
         match self {
             Kind::OpenBabelSimilaritySearching(_) => super::chem::openbabel::similarity::Report::new((job_id, cuk, input_ser, output_sers)).save(filepath),

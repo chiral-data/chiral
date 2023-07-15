@@ -56,7 +56,7 @@ impl Result {
         self.results.iter().filter(|r| r.is_some()).count()
     }
 
-    pub fn save_report(&self, job_id: super::ID, filepath: &std::path::PathBuf) -> std::io::Result<u64>  {
+    pub fn save_report(&self, job_id: crate::types::JobID, filepath: &std::path::PathBuf) -> std::io::Result<u64>  {
         let opk = self.req.get_opk();
         let output_sers = self.results.iter()
             .filter(|op_tr| op_tr.is_some())
