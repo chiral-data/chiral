@@ -4,6 +4,7 @@
 use serde::{Serialize, Deserialize};
 use crate::traits::{Serialization, SerializedFormat};
 use chiral_derive::Serialization;
+use crate::traits::TraitInput;
 
 #[derive(Serialize, Deserialize, Serialization, Debug, Clone, PartialEq, Eq, Hash)]  
 pub struct Requirement {
@@ -21,11 +22,16 @@ impl Requirement {
     pub fn get_opk(&self) -> &crate::kinds::Operator { &self.opk }
     pub fn get_dsk(&self) -> &crate::kinds::Dataset { &self.dsk }
     pub fn generate_cuk(&self) -> crate::kinds::ComputingUnit { crate::kinds::ComputingUnit::new(self.opk.to_owned(), self.dsk.to_owned()) }
-}
 
-impl std::default::Default for Requirement {
-    /// default job::Requirement: Substructure Matching on TestChembl
-    fn default() -> Self {
+    pub fn requirement_gromacs_for_tests() -> Self {
+        Self {
+            ji: crate::apps::chem::gromacs::gmx_command::Input::default().ser_to(),
+            opk: crate::kinds::Operator::GromacsRunGMXCommand,
+            dsk: crate::kinds::Dataset::Empty,
+        }
+    }
+
+    pub fn requirement_openbabel_for_tests() -> Self {
         Self {
             ji: "c1cccc1N=O".to_string(),
             opk: crate::kinds::Operator::OpenBabelSSMatching,

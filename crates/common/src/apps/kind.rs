@@ -14,7 +14,20 @@ pub enum Kind {
     GromacsRunGMXCommand
 }
 
+#[derive(Debug, PartialEq)]
+pub enum ComputationKind {
+    Simulation,
+    DataProcessing
+}
+
 impl Kind {
+    pub fn computation_kind(&self) -> ComputationKind {
+        match self {
+            Self::GromacsRunGMXCommand => ComputationKind::Simulation,
+            _ => ComputationKind::DataProcessing
+        }
+    }
+
     pub fn default_ob_similarity_searching() -> Self {
         let fpk = crate::apps::chem::kinds::Fingerprint::kind_openbabel_ecfp4(2048);
         Kind::OpenBabelSimilaritySearching(fpk)

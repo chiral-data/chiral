@@ -2,7 +2,6 @@
 //! 
 //! 
 
-pub type UserID = String;
 pub type EntryID = String;
 // Chemistry
 pub type SMILES = String;

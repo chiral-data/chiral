@@ -12,6 +12,7 @@ pub enum Status {
     Processing,
     Completed,
     Cancelled,
+    Unknown,
 }
 
 impl std::fmt::Display for Status {
@@ -21,8 +22,15 @@ impl std::fmt::Display for Status {
             Self::Processing => write!(f, "PROCESSING"),
             Self::Completed => write!(f, "COMPLETED"),
             Self::Cancelled => write!(f, "CANCELLED"),
+            Self::Unknown => write!(f, "UNKNOWN"),
         }
     }
+}
+
+#[derive(Debug, Serialize, Deserialize, Serialization, Clone, PartialEq)]
+pub enum Progress {
+    ByPercentage(f32),
+    ByBlocks(usize, usize, usize), // waiting, processing, completed
 }
 
 fn generate_id() -> crate::types::JobID {
@@ -41,39 +49,81 @@ fn generate_id() -> crate::types::JobID {
 //     duration: Option<std::time::Duration>
 // }
 
-#[derive(Serialize, Deserialize, Serialization, Debug, Clone, PartialEq, Eq)]   
+#[derive(Serialize, Deserialize, Serialization, Debug, Clone, PartialEq)]   
 pub struct Job {
     pub id: crate::types::JobID,
     pub requirement: super::Requirement,
     pub status: Status,
-    pub output: Option<SerializedFormat>,
+    pub progress: Progress,
+    pub outputs: Vec<Option<SerializedFormat>>,
     #[serde(with = "ts_milliseconds")]
     pub time_submitted: chrono::DateTime<chrono::Utc>,
     #[serde(with = "ts_milliseconds")]
     pub time_start: chrono::DateTime<chrono::Utc>,
-    pub duration: Option<std::time::Duration>
+    pub duration: Option<std::time::Duration>,
+    pub cost: crate::types::CreditPoints,
 }
 
 impl Job {
-    pub fn new(requirement: super::Requirement) -> Self {
+    pub fn new(requirement: super::Requirement, divisor: usize) -> Self {
+        let progress = match requirement.get_opk().computation_kind() {
+            crate::kinds::ComputationKind::Simulation => Progress::ByPercentage(0.0),
+            crate::kinds::ComputationKind::DataProcessing =>  Progress::ByBlocks(divisor, 0, 0)
+        };
+
         Self {
             id: generate_id(),
             requirement,
             status: Status::Created,
-            output: None,
+            progress,
+            outputs: vec![None; divisor],
             time_submitted: chrono::Utc::now(),
             time_start: chrono::Utc::now(),
-            duration: None
+            duration: None,
+            cost: 0.0
         }
     }
-    // pub fn new(req: super::Requirement) -> Self {
-    //     let id = generate_id();
-    //     Self { id, req, status_label: super::StatusLabel::Created, report_ready: false, time_start: chrono::Utc::now(), duration_prep: None, duration: None }
-    // }
 
-    // pub fn set_id(&mut self, id: super::ID) {
-    //     self.id = id;
-    // }
+    pub fn assign_task(&mut self)  {
+        match self.progress {
+            Progress::ByBlocks(w, p, c) => self.progress = Progress::ByBlocks(w - 1, p + 1 , c),
+            Progress::ByPercentage(_) => () 
+        }
+
+        if self.status == Status::Created {
+            self.status = Status::Processing;
+            self.time_start = chrono::Utc::now()
+        }
+    }
+
+    pub fn reset_task(&mut self) {
+        match self.progress {
+            Progress::ByBlocks(w, p, c) => self.progress = Progress::ByBlocks(w + 1, p - 1 , c),
+            Progress::ByPercentage(_) => () 
+        }
+    }
+
+    pub fn complete_task(&mut self, index: usize, output: Option<SerializedFormat>, cost: &crate::types::CreditPoints) {
+        match self.progress {
+            Progress::ByBlocks(w, p, c) => self.progress = Progress::ByBlocks(w, p - 1 , c + 1),
+            Progress::ByPercentage(_) => () 
+        }
+
+        self.outputs[index] = output; 
+        if self.outputs.iter().position(|o| o.is_none()).is_none() {
+            self.status = Status::Completed;
+            self.duration = match (chrono::Utc::now() - self.time_start).to_std() {
+                Ok(d) => Some(d),
+                Err(e) => {
+                    crate::logging::error(format!("chrono::Duration to std::time::Duration conversion error: {e}").as_str());
+                    Some(std::time::Duration::from_secs(0))
+                }
+            }
+        }
+
+        self.cost += cost;
+    }
+
 
     // pub fn start(&mut self) {
     //     self.status_label = super::StatusLabel::Processing;
