@@ -1,13 +1,12 @@
 mod requirement;
 // mod status;
-// mod result;
+mod result;
 mod job;
 
 pub type DividendSize = usize;
 pub type DividendIndex = (DividendSize, DividendSize);
 pub use requirement::Requirement;
-// pub use result::TaskResult;
-// pub use result::Result;
+pub use result::Result;
 pub use job::Status;
 pub use job::Job;
 pub type Jobs = std::collections::HashMap<crate::types::JobID, Job>;

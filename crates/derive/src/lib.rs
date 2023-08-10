@@ -7,6 +7,10 @@ pub fn derive_serial(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
         impl Serialization for #ident {
             fn ser_to(&self) -> SerializedFormat { serde_json::to_string(self).unwrap() }
             fn ser_from(content: &SerializedFormat) -> Self { serde_json::from_str(content).unwrap() }
+            fn ser_from_try(content: &SerializedFormat) -> anyhow::Result<Self> { 
+                serde_json::from_str(content)
+                    .map_err(|e| anyhow::Error::msg(e.to_string()))
+            }
         }
     };
     output.into()

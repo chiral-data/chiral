@@ -6,6 +6,7 @@ pub type SerializedFormat = String;
 pub trait Serialization {
     fn ser_to(&self) -> SerializedFormat; 
     fn ser_from(content: &SerializedFormat) -> Self; 
+    fn ser_from_try(content: &SerializedFormat) -> anyhow::Result<Self> where Self: Sized;
 }
 
 pub trait TraitFileRequirements {
