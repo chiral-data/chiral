@@ -68,8 +68,9 @@ pub struct Job {
     #[serde(with = "ts_milliseconds")]
     pub time_submitted: chrono::DateTime<chrono::Utc>,
     #[serde(with = "ts_milliseconds")]
-    pub time_start: chrono::DateTime<chrono::Utc>,
-    pub duration: Option<std::time::Duration>,
+    pub time_started: chrono::DateTime<chrono::Utc>,
+    #[serde(with = "ts_milliseconds")]
+    pub time_completed: chrono::DateTime<chrono::Utc>,
     pub cost: crate::types::CreditPoints,
 }
 
@@ -87,11 +88,15 @@ impl Job {
             progress,
             outputs: vec![None; divisor],
             error: None,
-            time_submitted: chrono::Utc::now(),
-            time_start: chrono::Utc::now(),
-            duration: None,
+            time_submitted: chrono::DateTime::<chrono::Utc>::MIN_UTC,
+            time_started: chrono::DateTime::<chrono::Utc>::MIN_UTC,
+            time_completed: chrono::DateTime::<chrono::Utc>::MIN_UTC,
             cost: 0.0
         }
+    }
+
+    pub fn submit(&mut self) {
+        self.time_submitted = chrono::Utc::now();
     }
 
     pub fn assign_task(&mut self)  {
@@ -102,7 +107,7 @@ impl Job {
 
         if self.status == Status::Created {
             self.status = Status::Processing;
-            self.time_start = chrono::Utc::now()
+            self.time_started = chrono::Utc::now()
         }
     }
 
@@ -119,16 +124,18 @@ impl Job {
             Progress::ByPercentage(_) => () 
         }
 
+        // self.duration += match (chrono::Utc::now() - self.time_start).to_std() {
+        //     Ok(d) => d,
+        //     Err(e) => {
+        //         crate::logging::error(format!("chrono::Duration to std::time::Duration conversion error: {e}").as_str());
+        //         std::time::Duration::ZERO
+        //     }
+        // }
+
         self.outputs[index] = output; 
         if self.outputs.iter().position(|o| o.is_none()).is_none() {
             self.status = Status::CompletedSuccess;
-            self.duration = match (chrono::Utc::now() - self.time_start).to_std() {
-                Ok(d) => Some(d),
-                Err(e) => {
-                    crate::logging::error(format!("chrono::Duration to std::time::Duration conversion error: {e}").as_str());
-                    Some(std::time::Duration::from_secs(0))
-                }
-            }
+            self.time_completed = chrono::Utc::now();
         }
 
         self.cost += cost;
@@ -137,6 +144,7 @@ impl Job {
     pub fn complete_task_with_error(&mut self, error: String, cost: &crate::types::CreditPoints) {
         self.error = Some(error);
         self.status = Status::CompletedError;
+        self.time_completed = chrono::Utc::now();
         self.cost += cost;
     }
 
@@ -157,7 +165,7 @@ impl Job {
     }
 
     fn print_time_properties(&self) -> String {
-        format!("{}\t{:.2}", self.time_start.format("%Y-%m-%d %H:%M:%S").to_string(), self.duration.map_or(0.0, |d| d.as_secs_f32()))
+        format!("{}\t{}", self.time_started.format("%Y-%m-%d %H:%M:%S").to_string(), self.time_completed.format("%Y-%m-%d %H:%M:%S").to_string())
     }
 }
 
