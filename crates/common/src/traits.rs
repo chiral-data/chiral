@@ -10,8 +10,8 @@ pub trait Serialization {
 }
 
 pub trait TraitFileRequirements {
-    fn dir(&self) -> String { ".".to_string() }
-    fn dir_full(&self) -> String { ".".to_string() }
+    fn dir(&self) -> Option<String> { None }
+    fn dir_full(&self) -> Option<String> { None }
     fn files_in(&self) -> Vec<String> { vec![] }
     fn files_out(&self) -> Vec<String> { vec![] }
 }
@@ -52,7 +52,7 @@ pub trait TraitOperator {
     fn new(opk: &crate::kinds::Operator) -> Self;
     fn get_kind(&self) -> crate::kinds::Operator;
     fn prepare_data(&self, dsk: &crate::kinds::Dataset, div_index: &crate::job::DividendIndex, ds: std::sync::Arc<std::sync::Mutex<dyn TraitDataStore>>) -> Option<Self::DataType>;
-    fn compute(&self, input: &Self::InputType, data: &Self::DataType, div_index: &crate::job::DividendIndex) -> Self::OutputType;
+    fn compute(&self, input: &Self::InputType, data: &Self::DataType, div_index: &crate::job::DividendIndex) -> anyhow::Result<Self::OutputType>;
     fn report(&self, job_id: crate::types::JobID, input: Self::InputType, data: &Self::DataType, output: Self::OutputType) -> Self::ReportType;
 }
 

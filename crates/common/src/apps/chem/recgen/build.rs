@@ -13,14 +13,8 @@ pub struct Input {
 
 impl TraitInput for Input {
     fn default() -> Self {
-        // todo
-        // the requirement of input directory could has to be removed
-        let input_dir_o = std::env::var_os("RECGEN_INPUT");
-        if input_dir_o.is_none() {
-            panic!("Set environment variable RECGEN_INPUT for example input directory");
-        }
-        
-        let input_dir =  std::path::PathBuf::from(input_dir_o.unwrap().into_string().unwrap());
+        let data_dir = crate::apps::env_var::Variable::ChiralDataDir.get();
+        let input_dir =  std::path::PathBuf::from(data_dir).join("recgen/inputs");
         let mol = std::fs::read_to_string(input_dir.join("sample4.mol")).unwrap();
         Self { mol } 
     }

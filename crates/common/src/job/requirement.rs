@@ -38,4 +38,12 @@ impl Requirement {
             dsk: crate::kinds::Dataset::TestChembl,
         }
     }
+
+    pub fn requirement_recgen_for_tests() -> Self {
+        Self {
+            ji: crate::apps::chem::recgen::build::Input::default().ser_to(),
+            opk: crate::kinds::Operator::ReCGenBuild,
+            dsk: crate::kinds::Dataset::Empty,
+        }
+    }
 }

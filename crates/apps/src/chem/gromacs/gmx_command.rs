@@ -42,28 +42,25 @@ impl chiral_common::traits::TraitOperator for Operator {
         Some(Data {})
     }
 
-    fn compute(&self, input: &Self::InputType, _data: &Self::DataType, _div_index: &chiral_common::job::DividendIndex) -> Self::OutputType {
+    fn compute(&self, input: &Self::InputType, _data: &Self::DataType, _div_index: &chiral_common::job::DividendIndex) -> anyhow::Result<Self::OutputType> {
         let dir = self.home_dir.join(&input.simulation_id);
-        if !dir.exists() {
-            return Output { success: false, stdout: "".to_string(), stderr: format!("Directory {dir:?} does not exist!") };
-        }
-
         match gromacs::run_gmx_command(
             input.sub_command.as_str(),
             &input.arguments,
             &dir,
             &input.prompts
         ) {
-            Ok(command_outputs) => Output {
-                success: command_outputs.is_success(),
-                stdout: command_outputs.get_stdout_string(),
-                stderr: command_outputs.get_stderr_string()
+            Ok(command_outputs) => {
+                if command_outputs.is_success() {
+                    Ok(Output {
+                        stdout: command_outputs.get_stdout_string(),
+                        stderr: "".to_string()
+                    })
+                } else {
+                    Err(anyhow::Error::msg(command_outputs.get_stderr_string()))
+                }
             },
-            Err(e) => Output {
-                success: false,
-                stdout: "".to_string(),
-                stderr: e.to_string()
-            }
+            Err(e) => Err(anyhow::Error::msg(e.to_string()))
         }
     }
 
@@ -83,7 +80,15 @@ mod tests {
 
     #[test]
     fn test_gmx_command_op_failed() {
-        let home_dir = std::path::PathBuf::from("../../../gromacs-rust/tutorials");
+        let chiral_data_dir = chiral_common::apps::env_var::Variable::ChiralDataDir.get();
+        let home_dir = "test_op_failed";
+        if std::path::PathBuf::from(home_dir).exists() {
+            std::fs::remove_dir_all(home_dir).unwrap();
+        }
+        std::fs::create_dir(home_dir).unwrap();
+        std::fs::create_dir(std::path::PathBuf::from(home_dir).join("lysozyme")).unwrap();
+
+        // no input file
         let input = Input {
             simulation_id: "lysozyme".to_string(),
             sub_command: "grompp".to_string(),
@@ -94,31 +99,64 @@ mod tests {
             files_output: vec![]
         };
         let data = Data {};
-        let op = Operator { home_dir: home_dir.to_owned() };
-        let output = op.compute(&input, &data, &(0, 1));
-        assert_eq!(output.success, false);
-        assert!(output.stdout.len() == 0);
-        assert!(output.stderr.contains("File 'npt.mdp' does not exist"));
+        let op = Operator { home_dir: std::path::PathBuf::from(home_dir) };
+        let result = op.compute(&input, &data, &(0, 1));
+        assert!(result.is_err());
+        assert!(result.err().unwrap().to_string().contains("File 'npt.mdp' does not exist"));
+
+        // subcommand error
+        std::fs::copy(
+            std::path::PathBuf::from(chiral_data_dir).join("gromacs/lysozyme/1AKI_clean.pdb"),
+            std::path::PathBuf::from(home_dir).join("lysozyme").join("1AKI_clean.pdb")
+        ).unwrap();
+        let input = Input { 
+            simulation_id: "lysozyme".to_string(),
+            sub_command: "pdb2".to_string(), // should be pdb2gmx
+            arguments: ["-f", "1AKI_clean.pdb", "-o", "1AKI_processed.gro", "-water", "spce"].iter().map(|s| s.to_string()).collect(),
+            prompts: ["15 0"].iter().map(|s| s.to_string()).collect(),
+            files_dir: ".".to_string(),
+            files_input: ["1AKI_clean.pdb"].iter().map(|s| s.to_string()).collect(),
+            files_output: ["1AKI_processed.gro", "topol.top", "posre.itp"].iter().map(|s| s.to_string()).collect(),
+        };
+        let data = Data {};
+        let op = Operator { home_dir: std::path::PathBuf::from(home_dir) };
+        let result = op.compute(&input, &data, &(0, 1));
+        assert!(result.is_err());
+        assert!(result.err().unwrap().to_string().contains("'pdb2' is not a GROMACS command"));
+
+        std::fs::remove_dir_all(home_dir).unwrap();
     }
 
     #[test]
     fn test_gmx_command_op() {
-        let home_dir = std::path::PathBuf::from("../../../gromacs-rust/tutorials");
+        let chiral_data_dir = chiral_common::apps::env_var::Variable::ChiralDataDir.get();
+        let home_dir = "test_op";
+        if std::path::PathBuf::from(home_dir).exists() {
+            std::fs::remove_dir_all(home_dir).unwrap();
+        }
+        std::fs::create_dir(home_dir).unwrap();
+        std::fs::create_dir(std::path::PathBuf::from(home_dir).join("lysozyme")).unwrap();
+
+        std::fs::copy(
+            std::path::PathBuf::from(chiral_data_dir).join("gromacs/lysozyme/1AKI_clean.pdb"),
+            std::path::PathBuf::from(home_dir).join("lysozyme").join("1AKI_clean.pdb")
+        ).unwrap();
         let input = Input::default(); 
         let data = Data {};
         for fi in input.files_in().iter() {
-            let fip = home_dir.join(&input.simulation_id).join(fi);
+            let fip = std::path::PathBuf::from(home_dir).join(&input.simulation_id).join(fi);
             assert!(fip.exists());
         }
-        let op = Operator { home_dir: home_dir.to_owned() };
-        let output = op.compute(&input, &data, &(0, 1));
-        assert_eq!(output.success, true);
-        assert!(output.stdout.len() > 0);
-        assert!(output.stderr.len() > 0);
+        let op = Operator { home_dir: std::path::PathBuf::from(home_dir) };
+        let result = op.compute(&input, &data, &(0, 1));
+        assert!(result.is_ok());
+        assert!(result.unwrap().stdout.len() > 0);
         for fo in input.files_out().iter() {
-            let fop = home_dir.join(&input.simulation_id).join(fo);
+            let fop = std::path::PathBuf::from(home_dir).join(&input.simulation_id).join(fo);
             assert!(fop.exists());
             std::fs::remove_file(fop).unwrap();
         }
+        
+        std::fs::remove_dir_all(home_dir).unwrap();
     }
 }

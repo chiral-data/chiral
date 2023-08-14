@@ -1,3 +1,3 @@
-#[cfg(feature = "openbabel")]
-pub mod openbabel;
+// #[cfg(feature = "openbabel")]
+// pub mod openbabel;
 pub mod gromacs;

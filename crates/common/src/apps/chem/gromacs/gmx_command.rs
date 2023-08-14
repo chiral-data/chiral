@@ -36,12 +36,12 @@ impl TraitInput for Input {
 }
 
 impl TraitFileRequirements for Input {
-    fn dir(&self) -> String {
-        self.simulation_id.to_owned()
+    fn dir(&self) -> Option<String> {
+        Some(self.simulation_id.to_owned())
     }
 
-    fn dir_full(&self) -> String {
-        std::path::PathBuf::from(&self.files_dir).join(&self.simulation_id).to_string_lossy().to_string()
+    fn dir_full(&self) -> Option<String> {
+        Some(std::path::PathBuf::from(&self.files_dir).join(&self.simulation_id).to_string_lossy().to_string())
     }
 
     fn files_in(&self) -> Vec<String> {
@@ -58,28 +58,30 @@ impl TraitFileRequirements for Input {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Serialization)]
 pub struct Output {
     // #[pyo3(get)]
-    pub success: bool,
-    // #[pyo3(get)]
     pub stdout: String,
-    // #[pyo3(get)]
     pub stderr: String
 }
 
 impl TraitOutput for Output {
-    fn blank() -> Self { Self { success: false, stdout: "".to_string(), stderr: "".to_string() } }
+    fn blank() -> Self { 
+        // Self { success: false, stdout: "".to_string(), stderr: "".to_string() } 
+        Self { stdout: "".to_string(), stderr: "".to_string() } 
+    }
 
     fn len(&self) -> usize { panic!("not applicable") }
 
     fn clear(&mut self) {
-        self.success = false;
+        // self.success = false;
         self.stdout.clear();
         self.stderr.clear();
     }
 
     fn append(&mut self, other: &mut Self) {
-        self.success = other.success;
-        self.stdout += other.stdout.as_str();
-        self.stderr += other.stderr.as_str();
+        // self.success = other.success;
+        // self.stdout += other.stdout.as_str();
+        // self.stderr += other.stderr.as_str();
+        self.stdout = other.stdout.to_string();
+        self.stderr = other.stderr.to_string();
     }
 }
 
