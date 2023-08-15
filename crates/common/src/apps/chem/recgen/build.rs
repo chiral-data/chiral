@@ -23,22 +23,22 @@ impl TraitInput for Input {
 /// Output
 #[derive(Debug, PartialEq, Serialize, Deserialize, Serialization, Clone)]
 pub struct Output {
-    pub results: Vec<crate::apps::types::SMILES>
+    pub smiles: Vec<crate::apps::types::SMILES>
 }
 
 impl TraitOutput for Output {
-    fn blank() -> Self { Self { results: vec![] } }
+    fn blank() -> Self { Self { smiles: vec![] } }
 
-    fn len(&self) -> usize { self.results.len() }
+    fn len(&self) -> usize { self.smiles.len() }
 
     fn clear(&mut self) {
-        self.results.clear();
+        self.smiles.clear();
     }
 
     fn append(&mut self, other: &mut Self) {
-        for r in other.results.to_vec().into_iter() {
-            if !self.results.contains(&r) {
-                self.results.push(r);
+        for r in other.smiles.to_vec().into_iter() {
+            if !self.smiles.contains(&r) {
+                self.smiles.push(r);
             }
         }
     }
@@ -59,7 +59,7 @@ impl TraitReport for Report {
         println!(" Dataset");
         println!("\t kind: {}", self.cuk.get_dsk());
         println!(" Output");
-        for smiles in self.output.results.iter() {
+        for smiles in self.output.smiles.iter() {
             println!("\t {smiles}");
         }
         println!("\t Count: {}", self.output.len());
