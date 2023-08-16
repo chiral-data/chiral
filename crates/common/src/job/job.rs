@@ -77,8 +77,8 @@ pub struct Job {
 impl Job {
     pub fn new(requirement: super::Requirement, divisor: usize) -> Self {
         let progress = match requirement.get_opk().computation_kind() {
-            crate::kinds::ComputationKind::Simulation => Progress::ByPercentage(0.0),
-            crate::kinds::ComputationKind::DataProcessing =>  Progress::ByBlocks(divisor, 0, 0)
+            crate::kinds::ComputationKind::SingleMachineCPU | crate::kinds::ComputationKind::SingleMachineGPU => Progress::ByPercentage(0.0),
+            crate::kinds::ComputationKind::MultipleMachines =>  Progress::ByBlocks(divisor, 0, 0)
         };
 
         Self {

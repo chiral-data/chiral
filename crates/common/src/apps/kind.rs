@@ -11,20 +11,25 @@ pub enum Kind {
     #[strum(serialize = "recgen_build")]
     ReCGenBuild,
     #[strum(serialize = "gromacs_run_gmx_command")]
-    GromacsRunGMXCommand
+    GromacsRunGMXCommand,
+    #[strum(serialize = "candle_llama2")]
+    CandleLLaMA2,
 }
 
 #[derive(Debug, PartialEq)]
 pub enum ComputationKind {
-    Simulation,
-    DataProcessing
+    // single matchine for simulation, machine learning model inference
+    SingleMachineCPU, 
+    SingleMachineGPU, 
+    MultipleMachines, // data processing 
 }
 
 impl Kind {
     pub fn computation_kind(&self) -> ComputationKind {
         match self {
-            Self::GromacsRunGMXCommand => ComputationKind::Simulation,
-            _ => ComputationKind::DataProcessing
+            Self::GromacsRunGMXCommand => ComputationKind::SingleMachineGPU,
+            Self::CandleLLaMA2 => ComputationKind::SingleMachineCPU,
+            _ => ComputationKind::MultipleMachines
         }
     }
 
@@ -63,7 +68,8 @@ impl Kind {
         match self {
             Self::OpenBabelSSMatching | Self::OpenBabelSimilaritySearching(_) => "openbabel",
             Self::ReCGenBuild => "my_presto",
-            Self::GromacsRunGMXCommand => "gromacs"
+            Self::GromacsRunGMXCommand => "gromacs",
+            Self::CandleLLaMA2 => "huggingface candle",
         }
     }
 }

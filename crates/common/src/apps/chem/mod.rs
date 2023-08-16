@@ -1,4 +1,4 @@
-//! Application Chemistry
+//! Applications of Chemistry
 //! 
 
 pub mod kinds;

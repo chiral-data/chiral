@@ -21,7 +21,7 @@ impl chiral_common::traits::TraitOperator for Operator {
     type InputType = Input;
     type DataType = Data;
     type OutputType = Output; 
-    type ReportType = Report;
+    // type ReportType = Report;
 
     fn new(opk: &chiral_common::kinds::Operator) -> Self {
         match opk {
@@ -64,14 +64,14 @@ impl chiral_common::traits::TraitOperator for Operator {
         }
     }
 
-    fn report(&self, job_id: chiral_common::types::JobID, input: Self::InputType, _data: &Self::DataType, output: Self::OutputType) -> Self::ReportType {
-        Report {
-            job_id,
-            cuk: chiral_common::kinds::ComputingUnit::new(self.get_kind(), chiral_common::kinds::Dataset::Empty),
-            input, 
-            output
-        }
-    }
+    // fn report(&self, job_id: chiral_common::types::JobID, input: Self::InputType, _data: &Self::DataType, output: Self::OutputType) -> Self::ReportType {
+    //     Report {
+    //         job_id,
+    //         cuk: chiral_common::kinds::ComputingUnit::new(self.get_kind(), chiral_common::kinds::Dataset::Empty),
+    //         input, 
+    //         output
+    //     }
+    // }
 }
 
 #[cfg(test)]
