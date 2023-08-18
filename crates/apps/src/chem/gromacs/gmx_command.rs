@@ -26,8 +26,8 @@ impl chiral_common::traits::TraitOperator for Operator {
     fn new(opk: &chiral_common::kinds::Operator) -> Self {
         match opk {
             chiral_common::kinds::Operator::GromacsRunGMXCommand => {
-                let dir_str = chiral_common::apps::env_var::Variable::GromacsWorkDir.get();
-                let home_dir = std::path::PathBuf::from(dir_str);
+                let dir_str = chiral_common::apps::env_var::Variable::ChiralTmpDir.get();
+                let home_dir = std::path::PathBuf::from(dir_str).join("gromacs");
                 Self { home_dir }
             },
             _ => panic!("Operator Kind not match")

@@ -3,14 +3,14 @@
 
 pub enum Variable {
     ChiralDataDir,
-    GromacsWorkDir
+    ChiralTmpDir 
 }
 
 impl Variable {
     pub fn as_str(&self) -> &str {
         match self {
             Variable::ChiralDataDir => "CHIRAL_DATA_DIR",
-            Variable::GromacsWorkDir => "GROMACS_WORK_DIR",
+            Variable::ChiralTmpDir => "CHIRAL_TMP_DIR",
         }
     }
 
