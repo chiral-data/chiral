@@ -16,7 +16,7 @@ pub struct Input {
     pub sub_command: String,
     pub arguments: Vec<String>,
     pub prompts: Vec<String>,
-    pub files_dir: String, // files will be saved in directory files_dir/simulation/
+    pub files_dir: String, // files will be saved in directory files_dir/simulation_id/
     pub files_input: Vec<String>,
     pub files_output: Vec<String>
 }
@@ -28,7 +28,7 @@ impl TraitInput for Input {
             sub_command: "pdb2gmx".to_string(),
             arguments: ["-f", "1AKI_clean.pdb", "-o", "1AKI_processed.gro", "-water", "spce"].iter().map(|s| s.to_string()).collect(),
             prompts: ["15 0"].iter().map(|s| s.to_string()).collect(),
-            files_dir: ".".to_string(),
+            files_dir: "gromacs".to_string(),
             files_input: ["1AKI_clean.pdb"].iter().map(|s| s.to_string()).collect(),
             files_output: ["1AKI_processed.gro", "topol.top", "posre.itp"].iter().map(|s| s.to_string()).collect(),
         }
@@ -37,7 +37,7 @@ impl TraitInput for Input {
 
 impl TraitFileRequirements for Input {
     fn dir(&self) -> Option<String> {
-        Some(self.simulation_id.to_owned())
+        Some(format!("{}/{}", self.files_dir, self.simulation_id))
     }
 
     fn dir_full(&self) -> Option<String> {

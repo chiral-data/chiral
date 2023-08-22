@@ -26,6 +26,7 @@ pub trait TraitDataStore {
 }
 
 pub trait TraitFileClient : std::marker::Sync + std::marker::Send {
+    fn set_credentials(&self, username: &str, password: &str);
     fn download_files(&self, _local_dir: &str, _remote_dir: &str, _files: &Vec<String>) -> anyhow::Result<()> { Ok(()) }
     fn upload_files(&self, _local_dir: &str, _remote_dir: &str, _files: &Vec<String>) -> anyhow::Result<()> { Ok(()) }
     fn remove_local_files(&self, _local_dir: &str, _files: &Vec<String>) -> anyhow::Result<()> { Ok(()) }
