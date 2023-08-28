@@ -17,8 +17,8 @@ cxx = "1.0"
 anyhow = "1.0"
 openbabel = { version = "0.5.3", optional = true }
 gromacs = { path = "../../../gromacs-rust" }
-chiral-derive = { path = "/Users/qw/Documents/dev-chiral/chiral/crates/derive" }
-chiral-common = { path = "/Users/qw/Documents/dev-chiral/chiral/crates/common" }
+chiral-derive = { path = "/mnt/c/cygwin64/home/Owner/dev_chiral/chiral/crates/derive" }
+chiral-common = { path = "/mnt/c/cygwin64/home/Owner/dev_chiral/chiral/crates/common" }
 
 [build-dependencies]
 cxx-build = "1.0"

@@ -57,10 +57,10 @@ impl chiral_common::traits::TraitOperator for Operator {
                         stderr: "".to_string()
                     })
                 } else {
-                    Err(anyhow::Error::msg(command_outputs.get_stderr_string()))
+                    Err(anyhow::Error::msg(format!("gromacs command finished with error: {}", command_outputs.get_stderr_string())))
                 }
             },
-            Err(e) => Err(anyhow::Error::msg(e.to_string()))
+            Err(e) => Err(anyhow::Error::msg(format!("gromacs command not finished with error: {}", e.to_string())))
         }
     }
 
