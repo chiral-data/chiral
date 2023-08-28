@@ -8,6 +8,7 @@ use crate::traits::*;
 /// Input
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Serialization, InputFileRequirements)] 
 pub struct Input {
+    pub db_file: String,
     pub mol: String, // moleclue in mol format
 }
 
@@ -16,7 +17,7 @@ impl TraitInput for Input {
         let data_dir = crate::apps::env_var::Variable::ChiralDataDir.get();
         let input_dir =  std::path::PathBuf::from(data_dir).join("recgen/inputs");
         let mol = std::fs::read_to_string(input_dir.join("sample4.mol")).unwrap();
-        Self { mol } 
+        Self { db_file: "DrugBank_M.db".to_string(), mol } 
     }
 }
 
